@@ -50,14 +50,9 @@ public class EmployeeStepConfig {
 
     @Bean
     @Qualifier("checkVacations")
-    public Step checkVacations(){
+    public Step checkVacations(@Qualifier("checkVacationTasklet") Tasklet checkVacationTasklet){
         return stepBuilderFactory.get("checkVacations")
-                .tasklet(checkVacationTasklet())
+                .tasklet(checkVacationTasklet)
                 .build();
     }
-    private Tasklet checkVacationTasklet(){
-        return (contribution, chunkContext) -> RepeatStatus.FINISHED;
-    }
-
-
 }

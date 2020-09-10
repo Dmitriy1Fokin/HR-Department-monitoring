@@ -1,5 +1,6 @@
 package ru.fds.hrdepartmentmonitoring.batch.job;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
+@Slf4j
 @Configuration
 public class JobConfig {
 
@@ -33,7 +35,7 @@ public class JobConfig {
     @Bean
     @Qualifier
     public Job readLinesJob(@Qualifier("readLinesStep") Step step,
-                            JobExecutionListener jobListener){
+                            @Qualifier("readLineJobListener") JobExecutionListener jobListener){
         return jobBuilderFactory.get("readLinesJob")
                 .listener(jobListener)
                 .start(step)

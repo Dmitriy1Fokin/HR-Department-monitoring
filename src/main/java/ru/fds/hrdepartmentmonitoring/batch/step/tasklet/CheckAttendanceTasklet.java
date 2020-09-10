@@ -33,7 +33,6 @@ public class CheckAttendanceTasklet implements Tasklet, StepExecutionListener {
     public void beforeStep(StepExecution stepExecution) {
         Long employeeId = stepExecution.getJobExecution().getJobParameters().getLong("employeeId");
         attendanceSheetDtoList = hrDepartmentService.getAttendanceByEmployee(employeeId).getBody();
-        log.info("LIST EMP: {}", attendanceSheetDtoList);
     }
 
     @Override
