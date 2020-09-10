@@ -1,5 +1,6 @@
 package ru.fds.hrdepartmentmonitoring.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -10,6 +11,7 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class MainService {
 
@@ -25,13 +27,9 @@ public class MainService {
         try {
             JobParameters jobParameters = new JobParametersBuilder().addLong("employeeId", employeeId).toJobParameters();
             jobLauncher.run(job,jobParameters);
-        } catch (JobInstanceAlreadyCompleteException e) {
-            e.printStackTrace();
-        } catch (JobRestartException e) {
-            e.printStackTrace();
-        } catch (JobParametersInvalidException e) {
-            e.printStackTrace();
-        } catch (JobExecutionAlreadyRunningException e) {
+        } catch (JobInstanceAlreadyCompleteException e){
+            log.info("Job is finished for employee with id: {}", employeeId);
+        } catch (JobRestartException | JobExecutionAlreadyRunningException | JobParametersInvalidException e) {
             e.printStackTrace();
         }
     }

@@ -61,10 +61,7 @@ public class StepConfig {
     }
 
     private Tasklet checkSickLeaveTasklet(){
-        return (contribution, chunkContext) -> {
-            log.info("checkSickLeave");
-            return RepeatStatus.FINISHED;
-        };
+        return (contribution, chunkContext) -> RepeatStatus.FINISHED;
     }
 
     @Bean
@@ -75,10 +72,7 @@ public class StepConfig {
                 .build();
     }
     private Tasklet checkVacationTasklet(){
-        return (contribution, chunkContext) -> {
-            log.info("checkVacation");
-            return RepeatStatus.FINISHED;
-        };
+        return (contribution, chunkContext) -> RepeatStatus.FINISHED;
     }
 
 
