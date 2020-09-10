@@ -9,28 +9,40 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Slf4j
 @Service
 public class MainService {
 
     private final JobLauncher jobLauncher;
-    private final Job job;
+    private final Job checkEmployeeJob;
+    private final Job readLinesJob;
 
-    public MainService(JobLauncher jobLauncher, Job job) {
+    public MainService(JobLauncher jobLauncher,
+                       @Qualifier("checkEmployeeJob") Job checkEmployeeJob,
+                       @Qualifier("readLinesJob") Job readLinesJob) {
         this.jobLauncher = jobLauncher;
-        this.job = job;
+        this.checkEmployeeJob = checkEmployeeJob;
+        this.readLinesJob = readLinesJob;
     }
 
     public void getStatAboutEmployee(Long employeeId){
         try {
             JobParameters jobParameters = new JobParametersBuilder().addLong("employeeId", employeeId).toJobParameters();
-            jobLauncher.run(job,jobParameters);
+            jobLauncher.run(checkEmployeeJob,jobParameters);
         } catch (JobInstanceAlreadyCompleteException e){
             log.info("Job is finished for employee with id: {}", employeeId);
         } catch (JobRestartException | JobExecutionAlreadyRunningException | JobParametersInvalidException e) {
             e.printStackTrace();
         }
+    }
+
+    public void readCats() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        JobParameters jobParameters = new JobParametersBuilder().addDate("dateTime", new Date()).toJobParameters();
+        jobLauncher.run(readLinesJob, jobParameters);
     }
 }

@@ -8,48 +8,32 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.fds.hrdepartmentmonitoring.batch.step.tasklet.CheckAtWorkDaysTasklet;
-import ru.fds.hrdepartmentmonitoring.batch.step.tasklet.CheckAttendanceTasklet;
-import ru.fds.hrdepartmentmonitoring.feign.HrDepartmentService;
 
 
 @Slf4j
 @Configuration
-public class StepConfig {
+public class EmployeeStepConfig {
 
     private final StepBuilderFactory stepBuilderFactory;
-    private final HrDepartmentService hrDepartmentService;
 
-    public StepConfig(StepBuilderFactory stepBuilderFactory,
-                      HrDepartmentService hrDepartmentService) {
+    public EmployeeStepConfig(StepBuilderFactory stepBuilderFactory) {
         this.stepBuilderFactory = stepBuilderFactory;
-        this.hrDepartmentService = hrDepartmentService;
     }
 
     @Bean
     @Qualifier("getAttendanceByEmployee")
-    public Step getAttendanceByEmployee(){
+    public Step getAttendanceByEmployee(@Qualifier("checkAttendanceTasklet") Tasklet checkAttendanceTasklet){
         return stepBuilderFactory.get("getAttendanceByEmployee")
-                .tasklet(checkAttendanceTasklet())
+                .tasklet(checkAttendanceTasklet)
                 .build();
-    }
-
-    @Bean
-    public Tasklet checkAttendanceTasklet(){
-        return new CheckAttendanceTasklet(hrDepartmentService);
     }
 
     @Bean
     @Qualifier("checkWorksDays")
-    public Step checkWorksDays(){
+    public Step checkWorksDays(@Qualifier("checkAtWorkDaysTasklet") Tasklet checkAtWorkDaysTasklet){
         return stepBuilderFactory.get("checkWorksDays")
-                .tasklet(checkAtWorkDaysTasklet())
+                .tasklet(checkAtWorkDaysTasklet)
                 .build();
-    }
-
-    @Bean
-    public Tasklet checkAtWorkDaysTasklet(){
-        return new CheckAtWorkDaysTasklet();
     }
 
     @Bean
