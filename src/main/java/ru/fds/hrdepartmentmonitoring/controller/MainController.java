@@ -14,7 +14,7 @@ import ru.fds.hrdepartmentmonitoring.service.MainService;
 @RestController
 public class MainController {
 
-        private final MainService mainService;
+    private final MainService mainService;
 
     public MainController(MainService mainService) {
         this.mainService = mainService;
