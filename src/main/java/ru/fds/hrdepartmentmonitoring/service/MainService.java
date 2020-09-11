@@ -21,13 +21,16 @@ public class MainService {
     private final JobLauncher jobLauncher;
     private final Job checkEmployeeJob;
     private final Job readLinesJob;
+    private final Job carStatJob;
 
     public MainService(JobLauncher jobLauncher,
                        @Qualifier("checkEmployeeJob") Job checkEmployeeJob,
-                       @Qualifier("readLinesJob") Job readLinesJob) {
+                       @Qualifier("readLinesJob") Job readLinesJob,
+                       @Qualifier("partitionerJob") Job carStatJob) {
         this.jobLauncher = jobLauncher;
         this.checkEmployeeJob = checkEmployeeJob;
         this.readLinesJob = readLinesJob;
+        this.carStatJob = carStatJob;
     }
 
     public void getStatAboutEmployee(Long employeeId){
@@ -44,5 +47,10 @@ public class MainService {
     public void readCats() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters jobParameters = new JobParametersBuilder().addDate("dateTime", new Date()).toJobParameters();
         jobLauncher.run(readLinesJob, jobParameters);
+    }
+
+    public void carStat() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        JobParameters jobParameters = new JobParametersBuilder().addDate("dateTime", new Date()).toJobParameters();
+        jobLauncher.run(carStatJob, jobParameters);
     }
 }

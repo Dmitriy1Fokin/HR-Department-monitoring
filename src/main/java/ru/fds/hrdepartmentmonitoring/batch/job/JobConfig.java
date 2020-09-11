@@ -41,4 +41,13 @@ public class JobConfig {
                 .start(step)
                 .build();
     }
+
+    @Bean
+    public Job partitionerJob(@Qualifier("partitionStep") Step partitionStep,
+                              @Qualifier("carStatListener")JobExecutionListener listener){
+        return jobBuilderFactory.get("partitionerJob")
+                .listener(listener)
+                .start(partitionStep)
+                .build();
+    }
 }

@@ -31,4 +31,10 @@ public class MainController {
         mainService.readCats();
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("car/stat")
+    public ResponseEntity<Void> carStat() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        mainService.carStat();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
