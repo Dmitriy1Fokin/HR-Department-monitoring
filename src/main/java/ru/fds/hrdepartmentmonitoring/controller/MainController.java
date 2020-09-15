@@ -26,15 +26,9 @@ public class MainController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("read/cat")
-    public ResponseEntity<Void> readCats() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        mainService.readCats();
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("car/stat")
-    public ResponseEntity<Void> carStat() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        mainService.carStat();
+    @GetMapping("insert/emp")
+    public ResponseEntity<Integer> insertEmployee(@RequestParam("path") String path) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        mainService.insertEmployee(path);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

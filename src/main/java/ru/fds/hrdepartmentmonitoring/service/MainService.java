@@ -20,17 +20,14 @@ public class MainService {
 
     private final JobLauncher jobLauncher;
     private final Job checkEmployeeJob;
-    private final Job readLinesJob;
-    private final Job carStatJob;
+    private final Job insertNewEmployeeJob;
 
     public MainService(JobLauncher jobLauncher,
                        @Qualifier("checkEmployeeJob") Job checkEmployeeJob,
-                       @Qualifier("readLinesJob") Job readLinesJob,
-                       @Qualifier("partitionerJob") Job carStatJob) {
+                       @Qualifier("insertNewEmployeeJob")Job insertNewEmployeeJob) {
         this.jobLauncher = jobLauncher;
         this.checkEmployeeJob = checkEmployeeJob;
-        this.readLinesJob = readLinesJob;
-        this.carStatJob = carStatJob;
+        this.insertNewEmployeeJob = insertNewEmployeeJob;
     }
 
     public void getStatAboutEmployee(Long employeeId){
@@ -44,13 +41,12 @@ public class MainService {
         }
     }
 
-    public void readCats() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        JobParameters jobParameters = new JobParametersBuilder().addDate("dateTime", new Date()).toJobParameters();
-        jobLauncher.run(readLinesJob, jobParameters);
-    }
-
-    public void carStat() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        JobParameters jobParameters = new JobParametersBuilder().addDate("dateTime", new Date()).toJobParameters();
-        jobLauncher.run(carStatJob, jobParameters);
+    public void insertEmployee(String pathToFile) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        log.info("insertEmployee. Path: {}", pathToFile);
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("pathToFile", pathToFile)
+                .addDate("startTime", new Date())
+                .toJobParameters();
+        jobLauncher.run(insertNewEmployeeJob, jobParameters);
     }
 }

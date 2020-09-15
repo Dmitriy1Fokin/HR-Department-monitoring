@@ -2,15 +2,19 @@ package ru.fds.hrdepartmentmonitoring.batch.step;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.fds.hrdepartmentmonitoring.dto.Cat;
+import org.springframework.core.io.FileSystemResource;
+import ru.fds.hrdepartmentmonitoring.dto.EmployeeDto;
+import ru.fds.hrdepartmentmonitoring.mapper.EmployeeMapper;
 
 
 @Slf4j
@@ -25,16 +29,27 @@ public class ReadLinesStepConfig {
 
     @Bean
     @Qualifier
-    public Step readLinesStep(@Qualifier("catReader") ItemReader<Cat> catItemReader,
-                              @Qualifier("catProcessor") ItemProcessor<Cat, Cat> catItemProcessor,
-                              @Qualifier("catJdbcBatchItemWriter") ItemWriter<Cat> catItemWriter,
-                              @Qualifier("readLinesStepListener") StepExecutionListener listener){
-        return stepBuilderFactory.get("readLinesStep")
-                .listener(listener)
-                .<Cat, Cat>chunk(5)
-                .reader(catItemReader)
-                .processor(catItemProcessor)
-                .writer(catItemWriter)
+    public Step readEmployeeFromFileStep(@Qualifier("reader") ItemReader<EmployeeDto> reader,
+                                         @Qualifier("employeeWriter") ItemWriter<EmployeeDto> writer){
+        return stepBuilderFactory.get("readEmployeeFromFileStep")
+                .<EmployeeDto, EmployeeDto>chunk(1000)
+                .reader(reader)
+                .writer(writer)
+                .build();
+    }
+
+    @Bean
+    @StepScope
+    @Qualifier
+    public FlatFileItemReader<EmployeeDto> reader(@Value("#{jobParameters['pathToFile']}") String fileName) {
+
+        return new FlatFileItemReaderBuilder<EmployeeDto>()
+                .name("personItemReader")
+                .resource(new FileSystemResource(fileName))
+                .delimited()
+                .names("firstName", "lastName", "departmentId", "positionId", "dateIn", "dateOut")
+                .fieldSetMapper(new EmployeeMapper())
+                .linesToSkip(1)
                 .build();
     }
 }

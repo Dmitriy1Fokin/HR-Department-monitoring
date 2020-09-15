@@ -2,7 +2,6 @@ package ru.fds.hrdepartmentmonitoring.batch.job;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,20 +33,9 @@ public class JobConfig {
 
     @Bean
     @Qualifier
-    public Job readLinesJob(@Qualifier("readLinesStep") Step step,
-                            @Qualifier("readLineJobListener") JobExecutionListener jobListener){
-        return jobBuilderFactory.get("readLinesJob")
-                .listener(jobListener)
+    public Job insertNewEmployeeJob(@Qualifier("readEmployeeFromFileStep") Step step){
+        return jobBuilderFactory.get("insertNewEmployeeJob")
                 .start(step)
-                .build();
-    }
-
-    @Bean
-    public Job partitionerJob(@Qualifier("partitionStep") Step partitionStep,
-                              @Qualifier("carStatListener")JobExecutionListener listener){
-        return jobBuilderFactory.get("partitionerJob")
-                .listener(listener)
-                .start(partitionStep)
                 .build();
     }
 }
